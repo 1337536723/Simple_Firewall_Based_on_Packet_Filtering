@@ -231,3 +231,8 @@ ParseToIp函数可直接删除（如果真的要删除要把对应.h文件的函
 2. 实现fireView.cpp中的OnBlockping函数，OnBlockall函数，OnAllowall函数，以及ImplementRule函数。
 
 注：如果把ImplementRule函数分割成ImplementRule函数和ParseToIP函数两个函数，则还需实现ParseToIp函数。
+
+#实验配置
+
+本次实验使用到三台机器，两台虚拟机分别装载Windows XP系统和SEEDUbuntu系统，我们在Windows Xp系统下实现包过滤防火墙，然后使用SEEDUbuntu虚拟机进行网络攻击测试。另外，本机装载win10系统，可用于验证。详见[实验配置流程](https://github.com/familyld/Simple_Firewall_Based_on_Packet_Filtering/blob/master/%E5%AE%9E%E9%AA%8C%E9%85%8D%E7%BD%AE.md)。
+
