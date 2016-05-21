@@ -146,3 +146,88 @@ StopDriver主要进行服务的关闭，主要通过系统提供的ControlServic
 ####l)  WriteIo、ReadIo和RawIo
 WriteIo、ReadIo和RawIo主要进行对于设备的控制指令的交互，其会通过DeviceIoControl函数进行控制，功能是发送和接收对应设备驱动程序的控制代码。该函数的参数依次为：设备句柄(driverHandle)、控制命令CTL_CODE代码、给驱动程序传递的数据的所在地址、给驱动程序传递的数据的大小（字节）、驱动程序传回的数据的所在地址、驱动程序传回的数据的大小（字节）、驱动程序实际传回的数据的大小（字节）、是否并行操作
 
+##应用层文件：
+
+###1.  AddRuleDlg.h：
+
+基于底层文件进行过滤规则的加入
+
+####a)  构造函数
+通过LoadDriver函数进行了服务的注册、启动和设备的开启(要使服务生效，三个条件缺一不可)
+
+####b)  中间有一些跟MFC有关的用于前端交互的函数，不重要，先略去
+
+####c)  AddFilter
+AddFilter函数用于创建一条新的防火墙过滤规则并且写入设备文件
+
+####d)  Verify (待填充)
+Verify函数用于验证用户的ip地址输入的有效准确（包括格式正确和地址规则正确）
+
+####e)  OnAddSave (待填充)
+OnAddSave函数主要需要实现下面几个功能：
+
+- 从前端界面获取用户输入的防火墙规则
+
+- 将获取到的规则进行整理后写入文件（文件名为saved.rul，可借助本文件中提供的文件读写函数进行）
+
+- 创建对应的防火墙过滤规则并且写入设备文件（借助AddFilter函数）
+
+####f)  文件中还提供了一些可能会用到的文件读写函数（可在其上进行优化，或者直接使用）
+
+###2.  fireView.h：
+基于底层文件进行过滤规则的查看与控制
+
+####a)  构造函数
+主要用于初始化变量，变量的功能比较好理解，就不细说了
+
+####b)  PreCreateWindow
+PreCreateWindow指的是初始化界面时的行为，这里注册并启动了需要用到的服务
+
+####c)  接下来还是几个跟MFC有关的用于前端交互的函数
+
+####d)  OnAddrule
+OnAddrule指点击了AddRule按钮后的行为
+
+####e)  OnStart
+OnStart指点击了Start或者Stop按钮后的行为，对于hook进行启动和中止的控制
+
+####f)  OnBlockping (待填充)
+OnBlockping指点击了Block Ping按钮后的行为，功能是加入一条对ping包完全block的规则
+
+####g)  OnBlockAll (待填充)
+OnBlockAll指点击了Block All按钮后的行为，功能是加入一条对所有包完全block的规则
+
+####h)  OnAllowAll (待填充)
+OnAllowAll指点击了Allow All按钮后的行为，功能是无效化所有的block规则
+
+####i)  ImplementRule (待填充)
+ImplementRule在OnViewrules函数中进行了调用，指点击了View Rules按钮后的行为，功能是把所有的规则显示在前端界面上（利用本文件中已有的跟MFC有关的用于前端交互的函数，比如：AddItem函数）
+
+####j)  ParseToIp
+ParseToIp函数可直接删除（如果真的要删除要把对应.h文件的函数声明也删除），这个函数主要是分割出一部分代码，避免ImplementRule函数写得太长。
+
+####k)  后面都是跟MFC有关的用于前端交互的函数，可不修改
+
+###3.  fire.h：
+跟MFC有关的用于前端交互的文件，可不修改
+
+###4.  MainFrm.h：
+跟MFC有关的用于前端交互的文件，可不修改
+
+###5.  stdafx.h：
+跟MFC有关的用于前端交互的文件，可不修改
+
+###6.  SystemTray.h：
+跟MFC有关的用于前端交互的文件，可不修改
+
+###7.  fireDoc.h：
+用于文件读写的辅助文件，可不修改
+
+###8.  sockutil.h：
+提供了一些用于ip地址转换的工具函数
+
+###目标
+1. 实现AddRuleDlg.cpp中的Verify函数和OnAddSave函数；
+2. 实现fireView.cpp中的OnBlockping函数，OnBlockall函数，OnAllowall函数，以及ImplementRule函数。
+
+注：如果把ImplementRule函数分割成ImplementRule函数和ParseToIP函数两个函数，则还需实现ParseToIp函数。
