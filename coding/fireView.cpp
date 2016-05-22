@@ -48,8 +48,8 @@ CFireView::CFireView()
 	//********************************************************
 	m_pBrush = new CBrush;
 	ASSERT(m_pBrush);
-	m_clrBk = RGB(0x00,0x66,0x99);
-	m_clrText = RGB(0xff,0xff,0x00);
+	m_clrBk = RGB(0x01,0x0d,0x18);
+	m_clrText = RGB(0x1f,0xa8,0x88);
 	m_pBrush->CreateSolidBrush(m_clrBk);
 	m_pColumns = new CStringList;
 	ASSERT(m_pColumns);
@@ -95,9 +95,14 @@ BOOL CFireView::PreCreateWindow(CREATESTRUCT& cs)
 
 void CFireView::OnInitialUpdate()
 {
+	SetScrollSizes(MM_TEXT,CSize(1000,260)); //改变窗口大小
+
 	CFormView::OnInitialUpdate();
 	GetParentFrame()->RecalcLayout();
-	ResizeParentToFit();
+
+	ResizeParentToFit(); //新加的
+	
+	// ResizeParentToFit();
 	m_parent = (CMainFrame*)GetParent();
 	ShowHeaders();
 }
@@ -271,7 +276,7 @@ BOOL CFireView::ImplementRule(void)
 							OPEN_EXISTING,			// open only if it exist
 							NULL,
 							NULL);
-
+	
 	//if the function fails to open the file check it
 	if(_hFile == INVALID_HANDLE_VALUE)
 	{
@@ -449,7 +454,17 @@ BOOL CFireView::AddColumn(LPCTSTR strItem,int nItem,int nSubItem,int nMask,int n
 	lvc.mask = nMask;
 	lvc.fmt = nFmt;
 	lvc.pszText = (LPTSTR) strItem;
-	lvc.cx = m_cResult.GetStringWidth(lvc.pszText) + 25;
+	
+	// CString s;
+	// s.Format(_T("%d"),nItem);
+	// MessageBox(s);
+	if(nItem != 2 && nItem < 5) // 0,1,3,4四列要显示IP地址，所以列宽要长一些
+	{ 
+		lvc.cx = m_cResult.GetStringWidth(lvc.pszText) + 60;
+	}
+	else                       // 其他列的内容不会比标题长，列宽正常即可
+		lvc.cx = m_cResult.GetStringWidth(lvc.pszText) + 25;
+
 	if(nMask & LVCF_SUBITEM)
 	{
 		if(nSubItem != -1)
@@ -474,6 +489,7 @@ BOOL CFireView::AddItem(int nItem,int nSubItem,LPCTSTR strItem ,int nImageIndex)
 		lvItem.mask |= LVIF_IMAGE;
 		lvItem.iImage |= LVIF_IMAGE;
 	}
+
 	if(nSubItem == 0)
 		return m_cResult.InsertItem(&lvItem);
 
@@ -500,6 +516,7 @@ void CFireView::ShowHeaders()
 void CFireView::OnShowWindow(BOOL bShow, UINT nStatus)
 {
 	CFormView::OnShowWindow(bShow, nStatus);
+
 	AddHeader(_T("Dest IP"));
 	AddHeader(_T("Dest MASK"));
 	AddHeader(_T("Dest PORT"));
@@ -568,5 +585,7 @@ HBRUSH CFireView::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 void CFireView::OnViewrules()
 {
+	// MessageBox("Now in OnViewrules.");
 	ImplementRule();
 }
+

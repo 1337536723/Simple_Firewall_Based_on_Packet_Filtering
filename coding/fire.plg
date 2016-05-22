@@ -6,17 +6,7 @@
 --------------------Configuration: fire - Win32 Debug--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSPBF.tmp" with contents
-[
-/nologo /MDd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_AFXDLL" /D "_MBCS" /FR"Debug/" /Fp"Debug/fire.pch" /Yu"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
-"D:\·À»ðÇ½Ô´Âë\Ô´´úÂë(ÍÚ¿Õ°æ)\AddRuleDlg.cpp"
-"D:\·À»ðÇ½Ô´Âë\Ô´´úÂë(ÍÚ¿Õ°æ)\fireDoc.cpp"
-"D:\·À»ðÇ½Ô´Âë\Ô´´úÂë(ÍÚ¿Õ°æ)\fireView.cpp"
-"D:\·À»ðÇ½Ô´Âë\Ô´´úÂë(ÍÚ¿Õ°æ)\sockUtil.cpp"
-"D:\·À»ðÇ½Ô´Âë\Ô´´úÂë(ÍÚ¿Õ°æ)\SystemTray.cpp"
-]
-Creating command line "cl.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSPBF.tmp" 
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSPC0.tmp" with contents
+Creating temporary file "C:\DOCUME~1\NS_Lab\LOCALS~1\Temp\RSPE3.tmp" with contents
 [
 version.lib Wsock32.lib /nologo /subsystem:windows /incremental:yes /pdb:"Debug/fire.pdb" /debug /machine:I386 /out:"Debug/fire.exe" /pdbtype:sept 
 ".\Debug\AddRuleDlg.obj"
@@ -30,19 +20,9 @@ version.lib Wsock32.lib /nologo /subsystem:windows /incremental:yes /pdb:"Debug/
 ".\Debug\TDriver.obj"
 ".\Debug\fire.res"
 ]
-Creating command line "link.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSPC0.tmp"
+Creating command line "link.exe @C:\DOCUME~1\NS_Lab\LOCALS~1\Temp\RSPE3.tmp"
 <h3>Output Window</h3>
-Compiling...
-AddRuleDlg.cpp
-fireDoc.cpp
-fireView.cpp
-sockUtil.cpp
-SystemTray.cpp
-Generating Code...
 Linking...
-Creating command line "bscmake.exe /nologo /o"Debug/fire.bsc"  ".\Debug\StdAfx.sbr" ".\Debug\AddRuleDlg.sbr" ".\Debug\fire.sbr" ".\Debug\fireDoc.sbr" ".\Debug\fireView.sbr" ".\Debug\MainFrm.sbr" ".\Debug\sockUtil.sbr" ".\Debug\SystemTray.sbr" ".\Debug\TDriver.sbr""
-Creating browse info file...
-<h3>Output Window</h3>
 
 
 
