@@ -236,3 +236,7 @@ ParseToIp函数可直接删除（如果真的要删除要把对应.h文件的函
 
 本次实验使用到三台机器，两台虚拟机分别装载Windows XP系统和SEEDUbuntu系统，我们在Windows Xp系统下实现包过滤防火墙，然后使用SEEDUbuntu虚拟机进行网络攻击测试。另外，本机装载win10系统，可用于验证。详见[实验配置流程](https://github.com/familyld/Simple_Firewall_Based_on_Packet_Filtering/blob/master/%E5%AE%9E%E9%AA%8C%E9%85%8D%E7%BD%AE.md)。
 
+#界面优化
+
+由于原实现实在不美观，操作上也不够人性化，所以我适当地进行了一些界面调整，包括扩展窗体大小，调整过滤规则列表的列宽和整体宽度，使得IP地址和掩码可以完整显示，等等。 详见[界面优化流程](https://github.com/familyld/Simple_Firewall_Based_on_Packet_Filtering/blob/master/%E7%95%8C%E9%9D%A2%E4%BC%98%E5%8C%96.md)。
+
