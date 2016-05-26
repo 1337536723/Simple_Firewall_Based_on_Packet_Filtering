@@ -99,8 +99,9 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 		return FALSE;
 	// TODO: Modify the Window class or styles here by modifying
 	//  the CREATESTRUCT cs
-	// cs.style &= ~WS_THICKFRAME; // 禁止通过可用于调整窗口大小的粗框架创建窗口(即鼠标在窗体边缘时不会出现拉伸箭头)
-	// cs.style &= ~WS_MAXIMIZEBOX; // 禁止窗口最大化
+	// cs.style &= ~WS_THICKFRAME;
+	// cs.style &= ~WS_MAXIMIZEBOX;
+	
 	return TRUE;
 }
 

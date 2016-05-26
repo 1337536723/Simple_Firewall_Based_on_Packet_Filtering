@@ -167,19 +167,19 @@ IDD_FIRE_FORM DIALOGEX 0, 0, 345, 158
 STYLE WS_CHILD
 FONT 8, "Microsoft YaHei Mono"
 BEGIN
-    PUSHBUTTON      "Add Rules",IDC_ADDRULE,536,40,120,21
-    PUSHBUTTON      "View Rules",IDC_VIEWRULES,536,70,120,21
+    PUSHBUTTON      "Add Rules",IDC_ADDRULE,543,40,112,21
+    PUSHBUTTON      "View Rules",IDC_VIEWRULES,543,70,112,21
 
     CONTROL         "List1",IDC_LIST_RESULT,"SysListView32",LVS_REPORT | 
-                    LVS_AUTOARRANGE | WS_BORDER | WS_TABSTOP,14,34,504,88,0,
+                    LVS_AUTOARRANGE | WS_BORDER | WS_TABSTOP,14,34,510,88,0,
                     HIDC_LIST_RESULT
     PUSHBUTTON      "Bloack All",IDC_BLOCKALL,21,7,50,21,NOT WS_VISIBLE
     PUSHBUTTON      "Block Ping",IDC_BLOCKPING,108,7,50,21,NOT WS_VISIBLE
     PUSHBUTTON      "&Start",IDC_START,149,137,50,21,NOT WS_VISIBLE
     PUSHBUTTON      "Allow All",IDC_ALLOWALL,187,7,50,21,NOT WS_VISIBLE
-    GROUPBOX        "",IDC_STATIC,7,15,518,112
-    LTEXT           "Below are the rules registered in file",
-                    IDC_STATIC,170,24,165,8
+    GROUPBOX        "",IDC_STATIC,7,15,523,112
+    LTEXT           "Below are the rules that are registered in the rule file ",
+                    IDC_STATIC,175,24,165,8
 END
 
 IDD_ADDRULE DIALOG DISCARDABLE  0, 0, 308, 186

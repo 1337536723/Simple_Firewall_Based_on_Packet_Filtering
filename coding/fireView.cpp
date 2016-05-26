@@ -81,7 +81,7 @@ BOOL CFireView::PreCreateWindow(CREATESTRUCT& cs)
 	// TODO: Modify the Window class or styles here by modifying
 	//  the CREATESTRUCT cs
 	//*****************************************************************
-
+	
 	m_filterDriver.LoadDriver("IpFilterDriver", "System32\\Drivers\\IpFltDrv.sys", NULL, TRUE);
 
 	//we don't deregister the driver at destructor
@@ -95,14 +95,13 @@ BOOL CFireView::PreCreateWindow(CREATESTRUCT& cs)
 
 void CFireView::OnInitialUpdate()
 {
-	SetScrollSizes(MM_TEXT,CSize(1000,260)); //改变窗口大小
+	SetScrollSizes(MM_TEXT, CSize(1000,260)); // 改变View的大小
 
 	CFormView::OnInitialUpdate();
 	GetParentFrame()->RecalcLayout();
 
-	ResizeParentToFit(); //新加的
+	ResizeParentToFit(FALSE); // 窗体不需要适应View的大小
 	
-	// ResizeParentToFit();
 	m_parent = (CMainFrame*)GetParent();
 	ShowHeaders();
 }
@@ -126,18 +125,18 @@ void CFireView::Dump(CDumpContext& dc) const
 /////////////////////////////////////////////////////////////////////////////
 // CFireView message handlers
 
-void CFireView::OnAddrule()
+void CFireView::OnAddrule() 
 {
 	// TODO: Add your control notification handler code here
-	m_Addrule.DoModal ();
+	m_Addrule.DoModal ();	
 }
 
 
-void CFireView::OnStart()
+void CFireView::OnStart() 
 {
 	CString		_text;
 	m_cstart.GetWindowText(_text);
-
+	
 	//Start响应事件
 	if(_text != "Stop" )
 	{
@@ -162,12 +161,11 @@ void CFireView::OnStart()
 			m_parent ->SetOnlineLed(FALSE);
 			m_parent ->SetOfflineLed(TRUE);
 		}
-	}
+	}	
 }
 
-// 此函数需要填充
-// 禁用所有的ICMP包
-void CFireView::OnBlockping()
+//禁用所有的ICMP包
+void CFireView::OnBlockping() 
 {
 	// MessageBox("此功能需要你来实现！");
 	// Your code
@@ -191,13 +189,12 @@ void CFireView::OnBlockping()
 		ping = FALSE;
 		allow = TRUE;
 		block = TRUE;
-
+		
 	}
 }
 
-// 此函数需要填充
-// 禁用所有包
-void CFireView::OnBlockall()
+//禁用所有包
+void CFireView::OnBlockall() 
 {
 	// MessageBox("此功能需要你来实现！");
 	// Your code
@@ -207,6 +204,7 @@ void CFireView::OnBlockall()
 					"WARNING",
 					MB_YESNO) == IDYES)
 	{
+
 		//	CAddRuleDlg     arule;
 		IPFilter	 IPflt;
 
@@ -227,12 +225,12 @@ void CFireView::OnBlockall()
 		ping = FALSE;
 		allow = TRUE;
 		m_cblockall.EnableWindow(FALSE);
+	
 	}
 }
 
-// 此函数需要填充
-// 启用所有包
-void CFireView::OnAllowall()
+//启用所有包
+void CFireView::OnAllowall() 
 {
 	// MessageBox("此功能需要你来实现！");
 	// Your code
@@ -251,18 +249,17 @@ void CFireView::OnAllowall()
 			block = TRUE;
 			ping = TRUE;
 			_rows	= 1;
-		}
+		}	
 	}
 }
 
 
-// 此函数需要填充
-// 使用指定过滤规则
+
+//使用指定过滤规则
 BOOL CFireView::ImplementRule(void)
 {
 	// MessageBox("此功能需要你来实现！");
-	// Your code
-	// MessageBox("Now in ImplementRule.");
+	// Your code	
 	HANDLE	_hFile;
 	DWORD	error,nbytesRead;
 	char	data;
@@ -272,31 +269,30 @@ BOOL CFireView::ImplementRule(void)
 	_hFile = CreateFile("saved.rul",				// name of the file
 							GENERIC_READ | GENERIC_WRITE,// open as readable and writeable
 							FILE_SHARE_READ | FILE_SHARE_WRITE,        // shareaable as read only
-							NULL,
+							NULL,						
 							OPEN_EXISTING,			// open only if it exist
 							NULL,
 							NULL);
-	
+
 	//if the function fails to open the file check it
 	if(_hFile == INVALID_HANDLE_VALUE)
 	{
 		error = GetLastError();
-		//MessageBox("Unable to open the file");
 		MessageBox("Unable to open the file");
 		return FALSE;
 	}
-
-	// if the file succeds than interpret read the file
+	
+	// if the file succeds than interpret read the file 
 	// and interprets the rule and assign them to the firewall
-
+	
 	else
-	{
+	{  
 		BOOL bResult;
-
+		
 		do{
-			/* Read a single byte from the file as we had to look out for the
-   			endline. Though this is a bit time consuming one but it saves a lot
-   			of headache that had been caused if we had used more than one byte
+			/* Read a single byte from the file as we had to look out for the 
+			endline. Though this is a bit time consuming one but it saves a lot
+			of headache that had been caused if we had used more than one byte
 			*/
 			bResult = ReadFile(_hFile,&data,1,&nbytesRead,NULL);
 
@@ -304,41 +300,42 @@ BOOL CFireView::ImplementRule(void)
 			{
 				_buff  =  _buff + data;
 			}
-			else if((bResult && nbytesRead) !=0)
+			else
+			if((bResult && nbytesRead) !=0)
 			{
 				//_buff = _buff + '\n';
-			    //MessageBox((LPCTSTR)_buff);
+			//	MessageBox((LPCTSTR)_buff);
 				_buff.Remove('\n');
 				ParseToIp(_buff);
 				_buff = "";
 			}
-
-		//	_str1 =
-		//	m_redit = _buff;
+			
+			//	_str1 = 
+			//	m_redit = _buff;
 
 		}while((bResult && nbytesRead) !=0);
 
 		CloseHandle(_hFile);
 	}
 	// Close the file if all goes well
-	// MessageBox("All goes well, close the file.");
+	
+
 	return TRUE;
 }
 
-// 此函数需要填充
-// 将字符串解析为filter特定格式
+
+//将字符串解析为filter特定格式
 /* This function will parse a string into the IPFilter form
-   It works as a small Lexical Analyzer whose main job is to
-   convert the input string into a parsed string such that the
+   It works as a small Lexical Analyzer whose main job is to 
+   convert the input string into a parsed string such that the 
    format of the parsed string is in the IPFilter Format.
-   For the decalration of IPFilter structure look into the
+   For the decalration of IPFilter structure look into the 
    DrvFltIp.h header file
 */
 void CFireView:: ParseToIp(CString str)
 {
 	// Your code, please pay attention to the form of IP address and port!
 	//	IPFilter	ip;
-	// MessageBox("Now in ParseToIp.");
 	CString		_str[8];
 	int		count = 0;
 	int		_pos,_prevpos = 0;
@@ -360,29 +357,15 @@ void CFireView:: ParseToIp(CString str)
 		else
 		{
 			_str[count] = str.Right(1);
-			//_str[count] = str.Left(1);
 		}
-
+	
 
 		_prevpos  = _pos;
-
-	}
-	/*char ch[100];
-	wsprintf(ch,"%s,%s,%s,%s,%s,%s,%s,%s",
-				(LPCTSTR)_str[0],
-				(LPCTSTR)_str[1],
-				(LPCTSTR)_str[2],
-				(LPCTSTR)_str[3],
-				(LPCTSTR)_str[4],
-				(LPCTSTR)_str[5],
-				(LPCTSTR)_str[6],
-				(LPCTSTR)_str[7]);
-	MessageBox(ch);*/
-
-	//	m_redit = ch;
+	
+	}	
 
 	if(_rows == 1)
-	{
+	{	
 
 	}
 	AddItem(0,0,(LPCTSTR)_str[0]);
@@ -405,18 +388,13 @@ void CFireView:: ParseToIp(CString str)
 		proto = "UDP";
 	AddItem(0,6,((LPCTSTR)proto));
 
-	//	m_fgrid.SetTextArray(8*_rows + 6,(LPCTSTR)proto);
-
 	int _drop = atoi((LPCTSTR)_str[7]);
 	if(_drop == 0)
 		AddItem(0,7,"ALLOW");
-		//m_fgrid.SetTextArray(8*_rows + 7,"ALLOW");
 	if(_drop == 1)
 		AddItem(0,7,"DENY");
-	//	m_fgrid.SetTextArray(8*_rows + 7, "DENY");
 
-	_rows = _rows + 1;
-
+	_rows = _rows + 1;	
 
 	IPFilter	ip1;
 	ip1.destinationIp = inet_addr((LPCTSTR)_str[0]);
@@ -429,21 +407,20 @@ void CFireView:: ParseToIp(CString str)
 
 	int		drop;
 	drop				= atoi((LPCTSTR)_str[7]);
+
 	if(drop == 0)
 	{
 		ip1.drop		=	FALSE;
-
+	
 	}
+
 	if(drop	== 1)
 	{
 		ip1.drop		= TRUE;
-
-	}
-
-
+	
+	}	
+	
 	m_Addrule.AddFilter(ip1);
-
-	//return ip;
 }
 
 
@@ -454,15 +431,10 @@ BOOL CFireView::AddColumn(LPCTSTR strItem,int nItem,int nSubItem,int nMask,int n
 	lvc.mask = nMask;
 	lvc.fmt = nFmt;
 	lvc.pszText = (LPTSTR) strItem;
-	
-	// CString s;
-	// s.Format(_T("%d"),nItem);
-	// MessageBox(s);
-	if(nItem != 2 && nItem < 5) // 0,1,3,4四列要显示IP地址，所以列宽要长一些
-	{ 
+
+	if(nItem != 2 && nItem < 5)
 		lvc.cx = m_cResult.GetStringWidth(lvc.pszText) + 60;
-	}
-	else                       // 其他列的内容不会比标题长，列宽正常即可
+	else
 		lvc.cx = m_cResult.GetStringWidth(lvc.pszText) + 25;
 
 	if(nMask & LVCF_SUBITEM)
@@ -489,7 +461,6 @@ BOOL CFireView::AddItem(int nItem,int nSubItem,LPCTSTR strItem ,int nImageIndex)
 		lvItem.mask |= LVIF_IMAGE;
 		lvItem.iImage |= LVIF_IMAGE;
 	}
-
 	if(nSubItem == 0)
 		return m_cResult.InsertItem(&lvItem);
 
@@ -513,10 +484,9 @@ void CFireView::ShowHeaders()
 	}
 }
 
-void CFireView::OnShowWindow(BOOL bShow, UINT nStatus)
+void CFireView::OnShowWindow(BOOL bShow, UINT nStatus) 
 {
 	CFormView::OnShowWindow(bShow, nStatus);
-
 	AddHeader(_T("Dest IP"));
 	AddHeader(_T("Dest MASK"));
 	AddHeader(_T("Dest PORT"));
@@ -527,48 +497,48 @@ void CFireView::OnShowWindow(BOOL bShow, UINT nStatus)
 	AddHeader(_T("ACTION"));
 }
 
-void CFireView::OnStop()
+void CFireView::OnStop() 
 {
-	OnStart();
+	OnStart();	
 }
 
-void CFireView::OnUpdateStart(CCmdUI* pCmdUI)
-{
+void CFireView::OnUpdateStart(CCmdUI* pCmdUI) 
+{	
 	// TODO: Add your command update UI handler code here
-	pCmdUI ->Enable(start);
+	pCmdUI ->Enable(start);	
 }
 
-void CFireView::OnUpdateStop(CCmdUI* pCmdUI)
+void CFireView::OnUpdateStop(CCmdUI* pCmdUI) 
 {
 	// TODO: Add your command update UI handler code here
 	pCmdUI ->Enable(!start);
 }
 
-void CFireView::OnUpdateAllowall(CCmdUI* pCmdUI)
+void CFireView::OnUpdateAllowall(CCmdUI* pCmdUI) 
 {
 	// TODO: Add your command update UI handler code here
 	pCmdUI ->Enable(allow);
 }
 
-void CFireView::OnUpdateBlockall(CCmdUI* pCmdUI)
+void CFireView::OnUpdateBlockall(CCmdUI* pCmdUI) 
 {
 	// TODO: Add your command update UI handler code here
 	pCmdUI ->Enable(block);
 }
 
-void CFireView::OnUpdateBlockping(CCmdUI* pCmdUI)
+void CFireView::OnUpdateBlockping(CCmdUI* pCmdUI) 
 {
 	// TODO: Add your command update UI handler code here
-	pCmdUI ->Enable(ping);
+	pCmdUI ->Enable(ping);	
 }
 
-BOOL CFireView::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID, CCreateContext* pContext)
+BOOL CFireView::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID, CCreateContext* pContext) 
 {
 	return CFormView::Create(lpszClassName, lpszWindowName, dwStyle, rect, pParentWnd, nID, pContext);
 }
 //***********************************************************************
 
-HBRUSH CFireView::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+HBRUSH CFireView::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor) 
 {
 	HBRUSH hbr = CFormView::OnCtlColor(pDC, pWnd, nCtlColor);
 	switch(nCtlColor)
@@ -583,9 +553,7 @@ HBRUSH CFireView::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	return CFormView::OnCtlColor(pDC,pWnd,nCtlColor);
 }
 
-void CFireView::OnViewrules()
+void CFireView::OnViewrules() 
 {
-	// MessageBox("Now in OnViewrules.");
-	ImplementRule();
+	ImplementRule();	
 }
-

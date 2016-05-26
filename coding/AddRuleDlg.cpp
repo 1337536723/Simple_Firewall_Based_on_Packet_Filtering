@@ -24,7 +24,7 @@ CAddRuleDlg::CAddRuleDlg(CWnd* pParent /*=NULL*/)
 	m_sdport = _T("");
 	m_ssadd = _T("");
 	m_ssport = _T("");
-	ipFltDrv.LoadDriver("DrvFltIp", NULL, NULL, TRUE);
+	ipFltDrv.LoadDriver("DrvFltIp", NULL, NULL, TRUE);	
 }
 
 
@@ -61,7 +61,7 @@ DWORD CAddRuleDlg::AddFilter(IPFilter pf)
 {
 
 	DWORD result = ipFltDrv.WriteIo(ADD_FILTER, &pf, sizeof(pf));
-	if (result != DRV_SUCCESS)
+	if (result != DRV_SUCCESS) 
 	{
 		AfxMessageBox("Unable to add rule to the driver");
 		return FALSE;
@@ -72,8 +72,8 @@ DWORD CAddRuleDlg::AddFilter(IPFilter pf)
 }
 
 //*************************************************************************
-// 此函数需要填充
-// 检测输入的IP地址是否非法
+//检测输入的IP地址是否非法
+
 BOOL CAddRuleDlg::Verify(CString str)
 {
 	// MessageBox("此功能需要你来实现！");
@@ -81,9 +81,9 @@ BOOL CAddRuleDlg::Verify(CString str)
 	int pos = 0, prevpos = -1;		// Keeps track of current and previous
 									// positins in the string
 	CString    str1;
-
+	
 	// if string doesn't contains any . it means it is invalid IP
-
+	
 	if(str.Find('.') == -1)
 		return FALSE;
 	// if the input string contains any invalid entry like any alpahabets
@@ -95,7 +95,7 @@ BOOL CAddRuleDlg::Verify(CString str)
 	if(str.FindOneOf("!@#$%^&*()_+|-;:'\"/?><,") != -1)
 		return FALSE;
 
-	// if string contains . but not at the right position this will
+	// if string contains . but not at the right position this will 
 	// return false for that
 
 	int _pos = 0;
@@ -110,9 +110,9 @@ BOOL CAddRuleDlg::Verify(CString str)
 	_pos = str.Find('.',_pos+1);
 	if( (newpos+1 >= _pos) || (_pos > newpos + 4) )
 		return FALSE;
-
-
-
+	
+			
+	
 	//if a dot is found verify that the ip address is within valid
 	// range 0.0.0.0  & 255.255.255.255
 
@@ -124,7 +124,7 @@ BOOL CAddRuleDlg::Verify(CString str)
 			pos = str.GetLength();
 		str1 = str.Left(pos);
 		char ch[30];
-
+	
 		str1 = str1.Right(pos-(prevpos+1));
 		unsigned int a = atoi(LPCTSTR(str1));
 		if((0 > a)||(a > 255))
@@ -138,16 +138,16 @@ BOOL CAddRuleDlg::Verify(CString str)
 
 //*****************************************************************
 
-void CAddRuleDlg::OnKillfocusSadd()
+void CAddRuleDlg::OnKillfocusSadd() 
 {
 	// TODO: Add your control notification handler code here
 	UpdateData();
 	BOOL bresult = Verify(m_ssadd);
 	if(bresult == FALSE)
-		MessageBox("Invalid IP Address");
+		MessageBox("Invalid IP Address");	
 }
 
-void CAddRuleDlg::OnKillfocusDadd()
+void CAddRuleDlg::OnKillfocusDadd() 
 {
 	// TODO: Add your control notification handler code here
 	// This will check wether the IP address you had given
@@ -158,12 +158,11 @@ void CAddRuleDlg::OnKillfocusDadd()
     BOOL bresult = Verify(m_sdadd);
 	if(bresult == FALSE)
 		MessageBox("Invalid IP Address");
-
+	
 }
 
-// 此函数需要填充
-// 将新增的规则写入文件
-void CAddRuleDlg::OnAddsave()
+//将新增的规则写入文件
+void CAddRuleDlg::OnAddsave() 
 {
 	// Your code
 	UpdateData();
@@ -173,7 +172,7 @@ void CAddRuleDlg::OnAddsave()
 	char ch[30];
 
 	if(action == 0 )
-		 setact = FALSE;
+		 setact = FALSE; 
 	else
 		setact = TRUE;
 
@@ -213,10 +212,10 @@ void CAddRuleDlg::OnAddsave()
     //strcpy((char*)((LPCTSTR)_str),ch1);
 	if( NewFile()== FALSE)
 		MessageBox("unable to create file");				//create a new file
-
+	
 	 GotoEnd();
-
-
+	 
+	
 	//MessageBox(_str);
 	SaveFile(ch1);
 	//	MessageBox("Unalbe tol write to file");
@@ -245,11 +244,11 @@ BOOL CAddRuleDlg::NewFile(void)
 	{
 		return FALSE;
 	}
-
+	
 	return TRUE;		// File has been opened succesfully
 }
 //******************************************************
-// This will move the file pointer to the end of the file so that
+// This will move the file pointer to the end of the file so that 
 // it can be easily added to the file
 
 DWORD CAddRuleDlg::GotoEnd(void)
@@ -275,7 +274,7 @@ DWORD CAddRuleDlg::GotoEnd(void)
 DWORD CAddRuleDlg::SaveFile(char*  str)
 {
 	DWORD   bytesWritten;
-	/* Try to write the string passed as parameter to the file and if any
+	/* Try to write the string passed as parameter to the file and if any 
 		error occurs return the appropriate values
 	*/
 	DWORD	_len =  strlen(str);
@@ -302,7 +301,7 @@ BOOL CAddRuleDlg::CloseFile()
 		{
 			return TRUE;
 		}
-		else
+		else 
 			return FALSE;
 	}
 }

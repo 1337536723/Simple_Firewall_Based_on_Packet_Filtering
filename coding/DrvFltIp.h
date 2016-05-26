@@ -2,7 +2,7 @@
 
   DrvFltIp.H
 
-
+  
 
 */
 
@@ -16,8 +16,6 @@
 //Include This file for the definitions of the CTL_CODE and extra
 #include <winioctl.h>
 
-// 自定义设备类型，在创建设备对象时使用
-// 自定义值的范围是32768-65535
 #define FILE_DEVICE_DRVFLTIP  0x00654322
 
 
@@ -28,16 +26,11 @@
 // 2048-4095 are reserved for customers.
 //
 
-// 自定义的IO控制代码，用于区分不同的设备控制请求
-// 自定义值的范围是2048-4095
-
 #define DRVFLTIP_IOCTL_INDEX  0x830
 
 
 
 //重要，这是应用向驱动发送的指令代码
-//分别是开始过滤、停止过滤、添加过滤规则、清除过滤规则和读取过滤规则
-
 #define START_IP_HOOK CTL_CODE(FILE_DEVICE_DRVFLTIP, DRVFLTIP_IOCTL_INDEX,METHOD_BUFFERED, FILE_ANY_ACCESS)
 
 #define STOP_IP_HOOK CTL_CODE(FILE_DEVICE_DRVFLTIP, DRVFLTIP_IOCTL_INDEX+1, METHOD_BUFFERED, FILE_ANY_ACCESS)
@@ -63,13 +56,13 @@ typedef struct filter
 
 	USHORT sourcePort;		//source port
 	USHORT destinationPort; //destination port
-
+	
 	BOOLEAN drop;			//if true, the packet will be drop, otherwise the packet pass
 }IPFilter;
 
 
 
-//struct to build a linked list
+//struct to build a linked list 
 struct filterList
 {
 	IPFilter ipf;
@@ -79,19 +72,19 @@ struct filterList
 
 
 //Ip Header，不会用到
-typedef struct IPHeader
+typedef struct IPHeader 
 {
-    UCHAR     iphVerLen;      // Version and length
-    UCHAR     ipTOS;          // Type of service
-    USHORT    ipLength;       // Total datagram length
-    USHORT    ipID;		      // Identification
+    UCHAR     iphVerLen;      // Version and length 
+    UCHAR     ipTOS;          // Type of service 
+    USHORT    ipLength;       // Total datagram length 
+    USHORT    ipID;		      // Identification 
     USHORT    ipFlags;	      // Flags
-    UCHAR     ipTTL;	      // Time to live
-    UCHAR     ipProtocol;	  // Protocol
-    USHORT    ipChecksum;     // Header checksum
-    ULONG     ipSource;       // Source address
-    ULONG     ipDestination;  // Destination address
-} IPPacket;
+    UCHAR     ipTTL;	      // Time to live 
+    UCHAR     ipProtocol;	  // Protocol 
+    USHORT    ipChecksum;     // Header checksum 
+    ULONG     ipSource;       // Source address 
+    ULONG     ipDestination;  // Destination address 
+} IPPacket; 
 
 
 //TCP Header，不会用到
