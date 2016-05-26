@@ -240,3 +240,7 @@ ParseToIp函数可直接删除（如果真的要删除要把对应.h文件的函
 
 由于原实现实在不美观，操作上也不够人性化，所以我适当地进行了一些界面调整，包括扩展窗体大小，调整过滤规则列表的列宽和整体宽度，使得IP地址和掩码可以完整显示，等等。 详见[界面优化流程](https://github.com/familyld/Simple_Firewall_Based_on_Packet_Filtering/blob/master/%E7%95%8C%E9%9D%A2%E4%BC%98%E5%8C%96.md)。
 
+#功能分析
+
+在[功能分析](https://github.com/familyld/Simple_Firewall_Based_on_Packet_Filtering/blob/master/%E7%95%8C%E9%9D%A2%E4%BC%98%E5%8C%96.md)中对需要填充的函数进行了解析，分析这些函数做了什么，实现怎样的功能。
+
