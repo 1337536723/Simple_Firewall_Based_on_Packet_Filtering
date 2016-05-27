@@ -20,6 +20,7 @@ IMPLEMENT_DYNCREATE(CFireView, CFormView)
 
 BEGIN_MESSAGE_MAP(CFireView, CFormView)
 	ON_BN_CLICKED(IDC_ADDRULE, OnAddrule)
+	ON_BN_CLICKED(IDC_DELRULE, OnDelrule)
 	ON_BN_CLICKED(IDC_START, OnStart)
 	ON_BN_CLICKED(IDC_BLOCKPING, OnBlockping)
 	ON_BN_CLICKED(IDC_BLOCKALL, OnBlockall)
@@ -53,7 +54,7 @@ CFireView::CFireView()
 	m_pBrush->CreateSolidBrush(m_clrBk);
 	m_pColumns = new CStringList;
 	ASSERT(m_pColumns);
-	_rows = 1;
+	_rows = 0;
 	start = TRUE;
 	block = TRUE;
 	allow = TRUE;
@@ -81,7 +82,7 @@ BOOL CFireView::PreCreateWindow(CREATESTRUCT& cs)
 	// TODO: Modify the Window class or styles here by modifying
 	//  the CREATESTRUCT cs
 	//*****************************************************************
-	
+
 	m_filterDriver.LoadDriver("IpFilterDriver", "System32\\Drivers\\IpFltDrv.sys", NULL, TRUE);
 
 	//we don't deregister the driver at destructor
@@ -101,7 +102,7 @@ void CFireView::OnInitialUpdate()
 	GetParentFrame()->RecalcLayout();
 
 	ResizeParentToFit(FALSE); // 窗体不需要适应View的大小
-	
+
 	m_parent = (CMainFrame*)GetParent();
 	ShowHeaders();
 }
@@ -125,18 +126,79 @@ void CFireView::Dump(CDumpContext& dc) const
 /////////////////////////////////////////////////////////////////////////////
 // CFireView message handlers
 
-void CFireView::OnAddrule() 
+void CFireView::OnAddrule()
 {
 	// TODO: Add your control notification handler code here
-	m_Addrule.DoModal ();	
+	m_Addrule.DoModal ();	// 显示添加规则的对话框
+}
+
+void CFireView::OnDelrule()
+{
+	// TODO: Add your control notification handler code here
+	if(MessageBox("Are you sure to delete the last filter?",
+				  "Confirm",
+				  MB_YESNO) == IDYES)
+	{
+		HANDLE	_hFile;
+		DWORD	error,nbytesRead;
+		char	data;
+		CString		_buff = "";
+
+		_hFile = CreateFile("saved.rul",				// name of the file
+							GENERIC_READ | GENERIC_WRITE,// open as readable and writeable
+							FILE_SHARE_READ | FILE_SHARE_WRITE,        // shareaable as read only
+							NULL,
+							OPEN_EXISTING,			// open only if it exist
+							NULL,
+							NULL);
+
+		//if the function fails to open the file check it
+		if(_hFile == INVALID_HANDLE_VALUE)
+		{
+			error = GetLastError();
+			MessageBox("Unable to open the file");
+		}
+
+		// if the file succeds than interpret read the file
+		// and interprets the rule and assign them to the firewall
+
+		else
+		{
+			BOOL bResult;
+
+			do{
+				/* Read a single byte from the file as we had to look out for the
+				endline. Though this is a bit time consuming one but it saves a lot
+				of headache that had been caused if we had used more than one byte
+				*/
+				bResult = ReadFile(_hFile,&data,1,&nbytesRead,NULL);
+
+				if((data != '\n'))
+				{
+					_buff  =  _buff + data;
+				}
+				else
+				if((bResult && nbytesRead) !=0)
+				{
+					_buff.Remove('\n');
+					MessageBox(_buff);
+					_buff = "";
+				}
+
+			}while((bResult && nbytesRead) !=0);
+
+			CloseHandle(_hFile);
+		}
+		// Close the file if all goes well
+	}
 }
 
 
-void CFireView::OnStart() 
+void CFireView::OnStart()
 {
 	CString		_text;
 	m_cstart.GetWindowText(_text);
-	
+
 	//Start响应事件
 	if(_text != "Stop" )
 	{
@@ -161,11 +223,11 @@ void CFireView::OnStart()
 			m_parent ->SetOnlineLed(FALSE);
 			m_parent ->SetOfflineLed(TRUE);
 		}
-	}	
+	}
 }
 
 //禁用所有的ICMP包
-void CFireView::OnBlockping() 
+void CFireView::OnBlockping()
 {
 	// MessageBox("此功能需要你来实现！");
 	// Your code
@@ -189,12 +251,12 @@ void CFireView::OnBlockping()
 		ping = FALSE;
 		allow = TRUE;
 		block = TRUE;
-		
+
 	}
 }
 
 //禁用所有包
-void CFireView::OnBlockall() 
+void CFireView::OnBlockall()
 {
 	// MessageBox("此功能需要你来实现！");
 	// Your code
@@ -219,18 +281,17 @@ void CFireView::OnBlockall()
 
 		m_Addrule.AddFilter(IPflt);
 		// Disable this button till further notice
-
 		//m_cblockall.SetCheck(0);
 		block = FALSE;
 		ping = FALSE;
 		allow = TRUE;
 		m_cblockall.EnableWindow(FALSE);
-	
+
 	}
 }
 
 //启用所有包
-void CFireView::OnAllowall() 
+void CFireView::OnAllowall()
 {
 	// MessageBox("此功能需要你来实现！");
 	// Your code
@@ -248,8 +309,8 @@ void CFireView::OnAllowall()
 			allow = FALSE;
 			block = TRUE;
 			ping = TRUE;
-			_rows	= 1;
-		}	
+			_rows	= 0;
+		}
 	}
 }
 
@@ -258,169 +319,138 @@ void CFireView::OnAllowall()
 //使用指定过滤规则
 BOOL CFireView::ImplementRule(void)
 {
-	// MessageBox("此功能需要你来实现！");
-	// Your code	
-	HANDLE	_hFile;
-	DWORD	error,nbytesRead;
-	char	data;
-	CString		_buff = "";
-	//	IPFilter	ipf;
+    HANDLE  _hFile;
+    DWORD   error,nbytesRead;
+    char    data;
+    CString     _buff = "";
 
-	_hFile = CreateFile("saved.rul",				// name of the file
-							GENERIC_READ | GENERIC_WRITE,// open as readable and writeable
-							FILE_SHARE_READ | FILE_SHARE_WRITE,        // shareaable as read only
-							NULL,						
-							OPEN_EXISTING,			// open only if it exist
-							NULL,
-							NULL);
+    _hFile = CreateFile("saved.rul",                // name of the file
+                            GENERIC_READ | GENERIC_WRITE,// open as readable and writeable
+                            FILE_SHARE_READ | FILE_SHARE_WRITE,        // shareaable as read only
+                            NULL,
+                            OPEN_EXISTING,          // open only if it exist
+                            NULL,
+                            NULL);
 
-	//if the function fails to open the file check it
-	if(_hFile == INVALID_HANDLE_VALUE)
-	{
-		error = GetLastError();
-		MessageBox("Unable to open the file");
-		return FALSE;
-	}
-	
-	// if the file succeds than interpret read the file 
-	// and interprets the rule and assign them to the firewall
-	
-	else
-	{  
-		BOOL bResult;
-		
-		do{
-			/* Read a single byte from the file as we had to look out for the 
-			endline. Though this is a bit time consuming one but it saves a lot
-			of headache that had been caused if we had used more than one byte
-			*/
-			bResult = ReadFile(_hFile,&data,1,&nbytesRead,NULL);
+    //if the function fails to open the file check it
+    if(_hFile == INVALID_HANDLE_VALUE)
+    {
+        error = GetLastError();
+        MessageBox("Unable to open the file");
+        return FALSE;
+    }
 
-			if((data != '\n'))
-			{
-				_buff  =  _buff + data;
-			}
-			else
-			if((bResult && nbytesRead) !=0)
-			{
-				//_buff = _buff + '\n';
-			//	MessageBox((LPCTSTR)_buff);
-				_buff.Remove('\n');
-				ParseToIp(_buff);
-				_buff = "";
-			}
-			
-			//	_str1 = 
-			//	m_redit = _buff;
+    // if the file succeds than interpret read the file
+    // and interprets the rule and assign them to the firewall
 
-		}while((bResult && nbytesRead) !=0);
+    else
+    {
+        BOOL bResult;
 
-		CloseHandle(_hFile);
-	}
-	// Close the file if all goes well
-	
+        do{
+            /* Read a single byte from the file as we had to look out for the
+            endline. Though this is a bit time consuming one but it saves a lot
+            of headache that had been caused if we had used more than one byte
+            */
+            bResult = ReadFile(_hFile,&data,1,&nbytesRead,NULL);
 
-	return TRUE;
+            if((data != '\n'))
+            {
+                _buff  =  _buff + data;
+            }
+            else if((bResult && nbytesRead) !=0)
+            {
+                _buff.Remove('\n');
+                ParseToIp(_buff);
+                _buff = "";
+            }
+        }while((bResult && nbytesRead) !=0);
+
+        CloseHandle(_hFile);
+    }
+    // Close the file if all goes well
+
+    return TRUE;
 }
 
 
 //将字符串解析为filter特定格式
 /* This function will parse a string into the IPFilter form
-   It works as a small Lexical Analyzer whose main job is to 
-   convert the input string into a parsed string such that the 
+   It works as a small Lexical Analyzer whose main job is to
+   convert the input string into a parsed string such that the
    format of the parsed string is in the IPFilter Format.
-   For the decalration of IPFilter structure look into the 
+   For the decalration of IPFilter structure look into the
    DrvFltIp.h header file
 */
 void CFireView:: ParseToIp(CString str)
 {
-	// Your code, please pay attention to the form of IP address and port!
-	//	IPFilter	ip;
-	CString		_str[8];
-	int		count = 0;
-	int		_pos,_prevpos = 0;
-	for(; count  < 8; count++)
-	{
-		if(count < 7)
-		{
-			_pos	= str.Find(',',_prevpos + 1);
-			if((count > 0))
-			{
-				_str[count] = str.Left(_pos);
-				_str[count].Delete(0,_prevpos + 1);
-			}
-			else{
-				if(count == 0)
-					_str[count] = str.Left(_pos);
-			}
-		}
-		else
-		{
-			_str[count] = str.Right(1);
-		}
-	
+    CString     _str[8];
+    int     count = 0;
+    int     _pos,_prevpos = 0;
+    for(; count  < 8; count++)
+    {
+        if(count < 7)
+        {
+            _pos    = str.Find(',',_prevpos + 1);
+            if(count > 0)
+            {
+                _str[count] = str.Left(_pos);
+                _str[count].Delete(0,_prevpos + 1);
+            }
+            else if(count == 0)
+                    _str[count] = str.Left(_pos);
+        }
+        else
+            _str[count] = str.Right(1);
 
-		_prevpos  = _pos;
-	
-	}	
+        _prevpos  = _pos;
+    }
 
-	if(_rows == 1)
-	{	
+    AddItem(_rows,0,(LPCTSTR)_str[0]);
+    AddItem(_rows,1,(LPCTSTR)_str[1]);
+    AddItem(_rows,2,(LPCTSTR)_str[2]);
+    AddItem(_rows,3,(LPCTSTR)_str[3]);
+    AddItem(_rows,4,(LPCTSTR)_str[4]);
+    AddItem(_rows,5,(LPCTSTR)_str[5]);
 
-	}
-	AddItem(0,0,(LPCTSTR)_str[0]);
-	AddItem(0,1,(LPCTSTR)_str[1]);
-	AddItem(0,2,(LPCTSTR)_str[2]);
-	AddItem(0,3,(LPCTSTR)_str[3]);
-	AddItem(0,4,(LPCTSTR)_str[4]);
-	AddItem(0,5,(LPCTSTR)_str[5]);
+    int _proto  =   atoi((LPCTSTR)_str[6]);
+    CString     proto;
+    if(_proto == 0)
+        proto = "ANY";
+    if(_proto == 1)
+        proto = "ICMP";
+    if(_proto == 6)
+        proto = "TCP";
+    if(_proto == 17)
+        proto = "UDP";
+    AddItem(_rows,6,((LPCTSTR)proto));
 
+    int _drop = atoi((LPCTSTR)_str[7]);
+    if(_drop == 0)
+        AddItem(_rows,7,"ALLOW");
+    if(_drop == 1)
+        AddItem(_rows,7,"DENY");
 
-	int	_proto	=	atoi((LPCTSTR)_str[6]);
-	CString		proto;
-	if(_proto == 0)
-		proto = "ANY";
-	if(_proto == 1)
-		proto = "ICMP";
-	if(_proto == 6)
-		proto = "TCP";
-	if(_proto == 17)
-		proto = "UDP";
-	AddItem(0,6,((LPCTSTR)proto));
+    _rows = _rows + 1;
 
-	int _drop = atoi((LPCTSTR)_str[7]);
-	if(_drop == 0)
-		AddItem(0,7,"ALLOW");
-	if(_drop == 1)
-		AddItem(0,7,"DENY");
+    IPFilter    ip1;
+    ip1.destinationIp   = inet_addr((LPCTSTR)_str[0]);
+    ip1.destinationMask = inet_addr((LPCTSTR)_str[1]);
+    ip1.sourceIp        = inet_addr((LPCTSTR)_str[3]);
+    ip1.sourceMask      = inet_addr((LPCTSTR)_str[4]);
+    ip1.sourcePort      = htons(atoi((LPCTSTR)_str[5]));
+    ip1.protocol        = atoi((LPCTSTR)_str[6]);
 
-	_rows = _rows + 1;	
+    int     drop;
+    drop                = atoi((LPCTSTR)_str[7]);
 
-	IPFilter	ip1;
-	ip1.destinationIp = inet_addr((LPCTSTR)_str[0]);
-	ip1.destinationMask = inet_addr((LPCTSTR)_str[1]);
-	ip1.sourceIp		= inet_addr((LPCTSTR)_str[3]);
-	ip1.sourceMask		= inet_addr((LPCTSTR)_str[4]);
-	ip1.sourcePort		= htons(atoi((LPCTSTR)_str[5]));
-	ip1.protocol			= atoi((LPCTSTR)_str[6]);
+    if(drop == 0)
+        ip1.drop        =   FALSE;
 
+    if(drop == 1)
+        ip1.drop        = TRUE;
 
-	int		drop;
-	drop				= atoi((LPCTSTR)_str[7]);
-
-	if(drop == 0)
-	{
-		ip1.drop		=	FALSE;
-	
-	}
-
-	if(drop	== 1)
-	{
-		ip1.drop		= TRUE;
-	
-	}	
-	
-	m_Addrule.AddFilter(ip1);
+    m_Addrule.AddFilter(ip1);
 }
 
 
@@ -484,7 +514,7 @@ void CFireView::ShowHeaders()
 	}
 }
 
-void CFireView::OnShowWindow(BOOL bShow, UINT nStatus) 
+void CFireView::OnShowWindow(BOOL bShow, UINT nStatus)
 {
 	CFormView::OnShowWindow(bShow, nStatus);
 	AddHeader(_T("Dest IP"));
@@ -497,48 +527,48 @@ void CFireView::OnShowWindow(BOOL bShow, UINT nStatus)
 	AddHeader(_T("ACTION"));
 }
 
-void CFireView::OnStop() 
+void CFireView::OnStop()
 {
-	OnStart();	
+	OnStart();
 }
 
-void CFireView::OnUpdateStart(CCmdUI* pCmdUI) 
-{	
+void CFireView::OnUpdateStart(CCmdUI* pCmdUI)
+{
 	// TODO: Add your command update UI handler code here
-	pCmdUI ->Enable(start);	
+	pCmdUI ->Enable(start);
 }
 
-void CFireView::OnUpdateStop(CCmdUI* pCmdUI) 
+void CFireView::OnUpdateStop(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
 	pCmdUI ->Enable(!start);
 }
 
-void CFireView::OnUpdateAllowall(CCmdUI* pCmdUI) 
+void CFireView::OnUpdateAllowall(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
 	pCmdUI ->Enable(allow);
 }
 
-void CFireView::OnUpdateBlockall(CCmdUI* pCmdUI) 
+void CFireView::OnUpdateBlockall(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
 	pCmdUI ->Enable(block);
 }
 
-void CFireView::OnUpdateBlockping(CCmdUI* pCmdUI) 
+void CFireView::OnUpdateBlockping(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
-	pCmdUI ->Enable(ping);	
+	pCmdUI ->Enable(ping);
 }
 
-BOOL CFireView::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID, CCreateContext* pContext) 
+BOOL CFireView::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID, CCreateContext* pContext)
 {
 	return CFormView::Create(lpszClassName, lpszWindowName, dwStyle, rect, pParentWnd, nID, pContext);
 }
 //***********************************************************************
 
-HBRUSH CFireView::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor) 
+HBRUSH CFireView::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
 	HBRUSH hbr = CFormView::OnCtlColor(pDC, pWnd, nCtlColor);
 	switch(nCtlColor)
@@ -553,7 +583,7 @@ HBRUSH CFireView::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	return CFormView::OnCtlColor(pDC,pWnd,nCtlColor);
 }
 
-void CFireView::OnViewrules() 
+void CFireView::OnViewrules()
 {
-	ImplementRule();	
+	ImplementRule();
 }

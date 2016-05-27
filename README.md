@@ -246,4 +246,4 @@ ParseToIp函数可直接删除（如果真的要删除要把对应.h文件的函
 
 #函数填充
 
-在[函数填充](https://github.com/familyld/Simple_Firewall_Based_on_Packet_Filtering/blob/master/%E7%A8%8B%E5%BA%8F%E6%B5%81%E7%A8%8B%E6%A2%B3%E7%90%86.md)中详细剖析了怎样把前面提到的7个大坑填好。
+在[函数填充](https://github.com/familyld/Simple_Firewall_Based_on_Packet_Filtering/blob/master/%E5%87%BD%E6%95%B0%E5%A1%AB%E5%85%85.md)中详细剖析了怎样把前面挖空的7个大坑填好。
