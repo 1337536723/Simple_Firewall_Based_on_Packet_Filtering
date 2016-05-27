@@ -1,0 +1,8 @@
+TARGETNAME=DrvFltIp
+TARGETTYPE=DRIVER
+TARGETPATH=OBJ
+
+INCLUDES=$(BASEDIR)\inc\ddk;\
+        
+
+SOURCES=drvfltip.cpp
