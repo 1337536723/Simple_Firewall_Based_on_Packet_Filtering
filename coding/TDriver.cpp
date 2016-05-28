@@ -6,7 +6,6 @@
 #include "stdafx.h"
 #include "TDriver.h"
 
-
 //Constructor. Initialize variables.
 TDriver::TDriver(void)
 {
@@ -297,7 +296,10 @@ DWORD TDriver::InitDriver(LPCTSTR name, LPCTSTR path, LPCTSTR dosName)
 
 	//set the state to initialized
 	initialized = TRUE;
-
+	
+	//AfxMessageBox(driverName);
+	//AfxMessageBox(driverPath);
+	//AfxMessageBox(driverDosName);
 	return DRV_SUCCESS;
 }
 

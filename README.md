@@ -251,3 +251,9 @@ ParseToIp函数可直接删除（如果真的要删除要把对应.h文件的函
 #功能测试
 
 到达这一步，整个程序的原理和流程我们都比较清晰了。那么实现功能之后，我们就必须进行相应的测试，从而检验代码中是否有潜在的Bug要修复。各个功能的测试流程写在[功能测试](https://github.com/familyld/Simple_Firewall_Based_on_Packet_Filtering/blob/master/%E5%8A%9F%E8%83%BD%E6%B5%8B%E8%AF%95.md)这一节中。
+
+#其他
+
+除了上面一些基本功能的实现，我们可以利用框架进行扩展。比方说通过定义DNS包头，实现DNS包的过滤。但是这也需要对驱动代码进行改动，添加相应的处理逻辑，由于时间关系，所以没有进行这方面的扩展。
+
+但是在用户界面和操作方面下点功夫还是没问题的，所以就有了前面的界面优化，除了界面优化之外，我也实现了删除规则的功能，毕竟只能添加不能删除实在是太过不人性化。这部分的内容写在[删除规则](https://github.com/familyld/Simple_Firewall_Based_on_Packet_Filtering/blob/master/%E5%8A%9F%E8%83%BD%E6%B5%8B%E8%AF%95.md)这一节中。

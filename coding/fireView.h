@@ -89,6 +89,7 @@ protected:
 protected:
 	//{{AFX_MSG(CFireView)
 	afx_msg void OnAddrule();
+	afx_msg void OnDelrule();
 	afx_msg void OnStart();
 	afx_msg void OnBlockping();
 	afx_msg void OnBlockall();

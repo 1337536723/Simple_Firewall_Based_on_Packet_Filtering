@@ -144,55 +144,70 @@ void CFireView::OnDelrule()
         char    data;
         CString     _buff = "";
 
-        _hFile = CreateFile("saved.rul",                // name of the file
-                            GENERIC_READ | GENERIC_WRITE,// open as readable and writeable
-                            FILE_SHARE_READ | FILE_SHARE_WRITE,        // shareaable as read only
+        // 打开本地存储文件
+        _hFile = CreateFile("saved.rul",                             // filename
+                            GENERIC_READ | GENERIC_WRITE,        // open as readable and writeable
+                            FILE_SHARE_READ | FILE_SHARE_WRITE,  // shareaable as read only
                             NULL,
-                            OPEN_EXISTING,          // open only if it exist
+                            OPEN_EXISTING,                       // open only if it exist
                             NULL,
                             NULL);
 
-        //if the function fails to open the file check it
         if(_hFile == INVALID_HANDLE_VALUE)
-        {
+        {   // 若无法打开文件则返回错误
             error = GetLastError();
             MessageBox("Unable to open the file");
         }
 
-        // if the file succeds than interpret read the file
-        // and interprets the rule and assign them to the firewall
-
         else
-        {
+        {   // 否则开始读取文件
             BOOL bResult;
-
+            int countRules = 0;
+            CString fullContent[999];
+            // 仅当ReadFile成功时bResult不为0
+            // 仅当读取到至少1个byte时nbytesRead不为0
             do{
-                /* Read a single byte from the file as we had to look out for the
-                endline. Though this is a bit time consuming one but it saves a lot
-                of headache that had been caused if we had used more than one byte
+                /* 每次读取一个byte，如果不是换行符，则把它添加到字符串中
+                   否则，检查是否读取成功，是即表示读取到换行符，把当前的
+                   字符串传递给ParseToIp函数，然后清空。
                 */
                 bResult = ReadFile(_hFile,&data,1,&nbytesRead,NULL);
 
-                if((data != '\n'))
+                if(data != '\n')
                 {
                     _buff  =  _buff + data;
                 }
-                else
-                if((bResult && nbytesRead) !=0)
+                else if((bResult && nbytesRead) !=0)
                 {
-                    _buff.Remove('\n');
-                    MessageBox(_buff);
+                    _buff  =  _buff + '\n';
+                    fullContent[countRules] = _buff;
+                    countRules ++;
                     _buff = "";
                 }
-
             }while((bResult && nbytesRead) !=0);
 
-            CloseHandle(_hFile);
+            CloseHandle(_hFile); // 关闭文件
+
+            DeleteFile("saved.rul"); // 删除文件
+
+            if( m_Addrule.NewFile()== FALSE) // 建立文件
+                MessageBox("unable to create file");
+
+            // 将除最后一条规则以外的所有规则逐条存入本地文件
+            int i = 0;
+            for(; i<countRules-1; i++)
+            {
+                m_Addrule.GotoEnd();
+                m_Addrule.SaveFile(fullContent[i].GetBuffer(0));
+            }
+
+            if(m_Addrule.CloseFile() == FALSE)
+                MessageBox("Unalbe to close the file");
+            else
+                MessageBox("Delete OK. Now click Allow All to clean the list and click View rules to see the changes.");
         }
-        // Close the file if all goes well
     }
 }
-
 
 void CFireView::OnStart()
 {

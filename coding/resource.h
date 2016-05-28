@@ -1,6 +1,7 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Developer Studio generated include file.
 // Used by fire.rc
+//
 #define IDD_FIRE_FORM                   101
 #define CG_IDS_SOCKETS_INIT_FAILED      102
 #define IDR_MAINFRAME                   128
@@ -21,6 +22,7 @@
 #define IDC_SADD                        1005
 #define IDC_DADD                        1006
 #define IDC_SPORT                       1007
+#define IDC_DELRULE                     1007
 #define IDC_DPORT                       1008
 #define IDC_COMBO1                      1009
 #define IDC_COMBO2                      1010

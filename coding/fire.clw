@@ -23,8 +23,8 @@ Class6=CAddRuleDlg
 Resource4=IDR_MENU1
 Resource5=IDD_ADDRULE
 Class7=CPortScanDlg
-Resource6=IDR_MAINFRAME (English (U.S.))
-Resource7=IDD_FIRE_FORM (English (U.S.))
+Resource6=IDD_FIRE_FORM (English (U.S.))
+Resource7=IDR_MAINFRAME (English (U.S.))
 Resource8=IDD_ABOUTBOX (English (U.S.))
 Resource9=IDR_MENU1 (English (U.S.))
 Resource10=IDD_ADDRULE (English (U.S.))
@@ -182,7 +182,7 @@ VirtualFilter=dWC
 [DLG:IDD_FIRE_FORM (English (U.S.))]
 Type=1
 Class=CFireView
-ControlCount=9
+ControlCount=10
 Control1=IDC_ADDRULE,button,1342242816
 Control2=IDC_VIEWRULES,button,1342242816
 Control3=IDC_LIST_RESULT,SysListView32,1350631681
@@ -192,6 +192,7 @@ Control6=IDC_START,button,1073807360
 Control7=IDC_ALLOWALL,button,1073807360
 Control8=IDC_STATIC,button,1342177287
 Control9=IDC_STATIC,static,1342308352
+Control10=IDC_DELRULE,button,1342242816
 
 [TB:IDR_MAINFRAME (English (U.S.))]
 Type=1
