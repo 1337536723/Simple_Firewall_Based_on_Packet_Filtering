@@ -242,8 +242,12 @@ ParseToIp函数可直接删除（如果真的要删除要把对应.h文件的函
 
 #程序流程梳理
 
-在[程序流程梳理](https://github.com/familyld/Simple_Firewall_Based_on_Packet_Filtering/blob/master/%E7%A8%8B%E5%BA%8F%E6%B5%81%E7%A8%8B%E6%A2%B3%E7%90%86.md)中对这个防火墙程序的启动以及各点击时间触发的函数进行了梳理。
+在[程序流程梳理](https://github.com/familyld/Simple_Firewall_Based_on_Packet_Filtering/blob/master/%E7%A8%8B%E5%BA%8F%E6%B5%81%E7%A8%8B%E6%A2%B3%E7%90%86.md)中对这个防火墙程序的启动以及各点击事件触发的函数进行了梳理。
 
 #函数填充
 
 在[函数填充](https://github.com/familyld/Simple_Firewall_Based_on_Packet_Filtering/blob/master/%E5%87%BD%E6%95%B0%E5%A1%AB%E5%85%85.md)中详细剖析了怎样把前面挖空的7个大坑填好。
+
+#功能测试
+
+到达这一步，整个程序的原理和流程我们都比较清晰了。那么实现功能之后，我们就必须进行相应的测试，从而检验代码中是否有潜在的Bug要修复。各个功能的测试流程写在[功能测试](https://github.com/familyld/Simple_Firewall_Based_on_Packet_Filtering/blob/master/%E5%87%BD%E6%95%B0%E5%A1%AB%E5%85%85.md)这一节中。
