@@ -19,92 +19,92 @@ static char THIS_FILE[] = __FILE__;
 IMPLEMENT_DYNCREATE(CFireView, CFormView)
 
 BEGIN_MESSAGE_MAP(CFireView, CFormView)
-    ON_BN_CLICKED(IDC_ADDRULE, OnAddrule)
-    ON_BN_CLICKED(IDC_DELRULE, OnDelrule)
-    ON_BN_CLICKED(IDC_START, OnStart)
-    ON_BN_CLICKED(IDC_BLOCKPING, OnBlockping)
-    ON_BN_CLICKED(IDC_BLOCKALL, OnBlockall)
-    ON_BN_CLICKED(IDC_ALLOWALL, OnAllowall)
-    ON_WM_CTLCOLOR()
-    ON_BN_CLICKED(IDC_VIEWRULES, OnViewrules)
-    ON_WM_SHOWWINDOW()
-    ON_UPDATE_COMMAND_UI(ID_Start, OnUpdateStart)
-    ON_COMMAND(ID_STOP, OnStop)
-    ON_UPDATE_COMMAND_UI(ID_STOP, OnUpdateStop)
-    ON_UPDATE_COMMAND_UI(ID_ALLOWALL, OnUpdateAllowall)
-    ON_UPDATE_COMMAND_UI(ID_BLOCKALL, OnUpdateBlockall)
-    ON_COMMAND(ID_Start, OnStart)
-    ON_COMMAND(ID_BLOCKALL, OnBlockall)
-    ON_COMMAND(ID_ALLOWALL, OnAllowall)
-    ON_COMMAND(ID_BLOCKPING, OnBlockping)
-    ON_UPDATE_COMMAND_UI(ID_BLOCKPING, OnUpdateBlockping)
+	ON_BN_CLICKED(IDC_ADDRULE, OnAddrule)
+	ON_BN_CLICKED(IDC_DELRULE, OnDelrule)
+	ON_BN_CLICKED(IDC_START, OnStart)
+	ON_BN_CLICKED(IDC_BLOCKPING, OnBlockping)
+	ON_BN_CLICKED(IDC_BLOCKALL, OnBlockall)
+	ON_BN_CLICKED(IDC_ALLOWALL, OnAllowall)
+	ON_WM_CTLCOLOR()
+	ON_BN_CLICKED(IDC_VIEWRULES, OnViewrules)
+	ON_WM_SHOWWINDOW()
+	ON_UPDATE_COMMAND_UI(ID_Start, OnUpdateStart)
+	ON_COMMAND(ID_STOP, OnStop)
+	ON_UPDATE_COMMAND_UI(ID_STOP, OnUpdateStop)
+	ON_UPDATE_COMMAND_UI(ID_ALLOWALL, OnUpdateAllowall)
+	ON_UPDATE_COMMAND_UI(ID_BLOCKALL, OnUpdateBlockall)
+	ON_COMMAND(ID_Start, OnStart)
+	ON_COMMAND(ID_BLOCKALL, OnBlockall)
+	ON_COMMAND(ID_ALLOWALL, OnAllowall)
+	ON_COMMAND(ID_BLOCKPING, OnBlockping)
+	ON_UPDATE_COMMAND_UI(ID_BLOCKPING, OnUpdateBlockping)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CFireView construction/destruction
 //初始化界面状态
 CFireView::CFireView()
-    : CFormView(CFireView::IDD)
+	: CFormView(CFireView::IDD)
 {
-    //********************************************************
-    m_pBrush = new CBrush;
-    ASSERT(m_pBrush);
-    m_clrBk = RGB(0x01,0x0d,0x18);
-    m_clrText = RGB(0x1f,0xa8,0x88);
-    m_pBrush->CreateSolidBrush(m_clrBk);
-    m_pColumns = new CStringList;
-    ASSERT(m_pColumns);
-    _rows = 0;
-    start = TRUE;
-    block = TRUE;
-    allow = TRUE;
-    ping = TRUE ;
+	//********************************************************
+	m_pBrush = new CBrush;
+	ASSERT(m_pBrush);
+	m_clrBk = RGB(0x01,0x0d,0x18);
+	m_clrText = RGB(0x1f,0xa8,0x88);
+	m_pBrush->CreateSolidBrush(m_clrBk);
+	m_pColumns = new CStringList;
+	ASSERT(m_pColumns);
+	_rows = 0;
+	start = TRUE;
+	block = TRUE;
+	allow = TRUE;
+	ping = TRUE ;
 }
 
 CFireView::~CFireView()
 {
-    if (m_pBrush)
-        delete m_pBrush;
+	if (m_pBrush)
+		delete m_pBrush;
 }
 
 void CFireView::DoDataExchange(CDataExchange* pDX)
 {
-    CFormView::DoDataExchange(pDX);
-    DDX_Control(pDX, IDC_LIST_RESULT, m_cResult);
-    DDX_Control(pDX, IDC_VIEWRULES, m_cvrules);
-    DDX_Control(pDX, IDC_BLOCKPING, m_cping);
-    DDX_Control(pDX, IDC_BLOCKALL, m_cblockall);
-    DDX_Control(pDX, IDC_START, m_cstart);
+	CFormView::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_LIST_RESULT, m_cResult);
+	DDX_Control(pDX, IDC_VIEWRULES, m_cvrules);
+	DDX_Control(pDX, IDC_BLOCKPING, m_cping);
+	DDX_Control(pDX, IDC_BLOCKALL, m_cblockall);
+	DDX_Control(pDX, IDC_START, m_cstart);
 }
 
 BOOL CFireView::PreCreateWindow(CREATESTRUCT& cs)
 {
-    // TODO: Modify the Window class or styles here by modifying
-    //  the CREATESTRUCT cs
-    //*****************************************************************
+	// TODO: Modify the Window class or styles here by modifying
+	//  the CREATESTRUCT cs
+	//*****************************************************************
 
-    m_filterDriver.LoadDriver("IpFilterDriver", "System32\\Drivers\\IpFltDrv.sys", NULL, TRUE);
+	m_filterDriver.LoadDriver("IpFilterDriver", "System32\\Drivers\\IpFltDrv.sys", NULL, TRUE);
 
-    //we don't deregister the driver at destructor
-    m_filterDriver.SetRemovable(FALSE);
+	//we don't deregister the driver at destructor
+	m_filterDriver.SetRemovable(FALSE);
 
-    //we load the Filter-Hook Driver
-    m_ipFltDrv.LoadDriver("DrvFltIp", NULL, NULL, TRUE);
-    //****************************************************************
-    return CFormView::PreCreateWindow(cs);
+	//we load the Filter-Hook Driver
+	m_ipFltDrv.LoadDriver("DrvFltIp", NULL, NULL, TRUE);
+	//****************************************************************
+	return CFormView::PreCreateWindow(cs);
 }
 
 void CFireView::OnInitialUpdate()
 {
-    SetScrollSizes(MM_TEXT, CSize(1000,260)); // 改变View的大小
+	SetScrollSizes(MM_TEXT, CSize(1000,260)); // 改变View的大小
 
-    CFormView::OnInitialUpdate();
-    GetParentFrame()->RecalcLayout();
+	CFormView::OnInitialUpdate();
+	GetParentFrame()->RecalcLayout();
 
-    ResizeParentToFit(FALSE); // 窗体不需要适应View的大小
+	ResizeParentToFit(FALSE); // 窗体不需要适应View的大小
 
-    m_parent = (CMainFrame*)GetParent();
-    ShowHeaders();
+	m_parent = (CMainFrame*)GetParent();
+	ShowHeaders();
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -113,12 +113,12 @@ void CFireView::OnInitialUpdate()
 #ifdef _DEBUG
 void CFireView::AssertValid() const
 {
-    CFormView::AssertValid();
+	CFormView::AssertValid();
 }
 
 void CFireView::Dump(CDumpContext& dc) const
 {
-    CFormView::Dump(dc);
+	CFormView::Dump(dc);
 }
 
 #endif //_DEBUG
@@ -128,23 +128,23 @@ void CFireView::Dump(CDumpContext& dc) const
 
 void CFireView::OnAddrule()
 {
-    // TODO: Add your control notification handler code here
-    m_Addrule.DoModal ();   // 显示添加规则的对话框
+	// TODO: Add your control notification handler code here
+	m_Addrule.DoModal ();	// 显示添加规则的对话框
 }
 
 void CFireView::OnDelrule()
 {
-    // TODO: Add your control notification handler code here
-    if(MessageBox("Are you sure to delete the last filter?",
-                  "Confirm",
-                  MB_YESNO) == IDYES)
-    {
-        HANDLE  _hFile;
-        DWORD   error,nbytesRead;
-        char    data;
-        CString     _buff = "";
+	// TODO: Add your control notification handler code here
+	if(MessageBox("Are you sure to delete the last filter?",
+				  "Confirm",
+				  MB_YESNO) == IDYES)
+	{
+		HANDLE	_hFile;
+		DWORD	error,nbytesRead;
+		char	data;
+		CString		_buff = "";
 
-        // 打开本地存储文件
+		// 打开本地存储文件
         _hFile = CreateFile("saved.rul",                             // filename
                             GENERIC_READ | GENERIC_WRITE,        // open as readable and writeable
                             FILE_SHARE_READ | FILE_SHARE_WRITE,  // shareaable as read only
@@ -169,7 +169,7 @@ void CFireView::OnDelrule()
             do{
                 /* 每次读取一个byte，如果不是换行符，则把它添加到字符串中
                    否则，检查是否读取成功，是即表示读取到换行符，把当前的
-                   字符串传递给ParseToIp函数，然后清空。
+                   字符串存入fullContent数组，然后清空。
                 */
                 bResult = ReadFile(_hFile,&data,1,&nbytesRead,NULL);
 
@@ -211,34 +211,34 @@ void CFireView::OnDelrule()
 
 void CFireView::OnStart()
 {
-    CString     _text;
-    m_cstart.GetWindowText(_text);
+	CString		_text;
+	m_cstart.GetWindowText(_text);
 
-    //Start响应事件
-    if(_text != "Stop" )
-    {
-        if(m_ipFltDrv.WriteIo(START_IP_HOOK, NULL, 0) != DRV_ERROR_IO)
-        {
-            MessageBox("Firewall Started Sucessfully");
-            start = FALSE;
-            m_cstart.SetWindowText("Stop");
-            m_parent ->SetOnlineLed(TRUE);
-            m_parent ->SetOfflineLed(FALSE);
-        }
-    }
+	//Start响应事件
+	if(_text != "Stop" )
+	{
+		if(m_ipFltDrv.WriteIo(START_IP_HOOK, NULL, 0) != DRV_ERROR_IO)
+		{
+			MessageBox("Firewall Started Sucessfully");
+			start = FALSE;
+			m_cstart.SetWindowText("Stop");
+			m_parent ->SetOnlineLed(TRUE);
+			m_parent ->SetOfflineLed(FALSE);
+		}
+	}
 
-    //Stop响应事件
-    else
-    {
-        if(m_ipFltDrv.WriteIo(STOP_IP_HOOK, NULL, 0) != DRV_ERROR_IO)
-        {
-            MessageBox("Firewall Stopped Succesfully");
-            m_cstart.SetWindowText("Start");
-            start = TRUE;
-            m_parent ->SetOnlineLed(FALSE);
-            m_parent ->SetOfflineLed(TRUE);
-        }
-    }
+	//Stop响应事件
+	else
+	{
+		if(m_ipFltDrv.WriteIo(STOP_IP_HOOK, NULL, 0) != DRV_ERROR_IO)
+		{
+			MessageBox("Firewall Stopped Succesfully");
+			m_cstart.SetWindowText("Start");
+			start = TRUE;
+			m_parent ->SetOnlineLed(FALSE);
+			m_parent ->SetOfflineLed(TRUE);
+		}
+	}
 }
 
 //禁用所有的ICMP包
@@ -398,7 +398,7 @@ BOOL CFireView::ImplementRule(void)
 */
 void CFireView:: ParseToIp(CString str)
 {
-    CString     _str[8];
+	CString     _str[8];
     int     count = 0;
     int     _pos,_prevpos = 0;
     for(; count  < 8; count++)
@@ -455,7 +455,7 @@ void CFireView:: ParseToIp(CString str)
     IPFilter    ip1;
     ip1.destinationIp   = inet_addr((LPCTSTR)_str[0]);
     ip1.destinationMask = inet_addr((LPCTSTR)_str[1]);
-    ip1.destinationPort = htons(atoi((LPCTSTR)_str[2]));
+	ip1.destinationPort = htons(atoi((LPCTSTR)_str[2]));
     ip1.sourceIp        = inet_addr((LPCTSTR)_str[3]);
     ip1.sourceMask      = inet_addr((LPCTSTR)_str[4]);
     ip1.sourcePort      = htons(atoi((LPCTSTR)_str[5]));
@@ -477,133 +477,133 @@ void CFireView:: ParseToIp(CString str)
 //增加过滤规则表列
 BOOL CFireView::AddColumn(LPCTSTR strItem,int nItem,int nSubItem,int nMask,int nFmt)
 {
-    LV_COLUMN lvc;
-    lvc.mask = nMask;
-    lvc.fmt = nFmt;
-    lvc.pszText = (LPTSTR) strItem;
+	LV_COLUMN lvc;
+	lvc.mask = nMask;
+	lvc.fmt = nFmt;
+	lvc.pszText = (LPTSTR) strItem;
 
-    if(nItem != 2 && nItem < 5)
-        lvc.cx = m_cResult.GetStringWidth(lvc.pszText) + 60;
-    else
-        lvc.cx = m_cResult.GetStringWidth(lvc.pszText) + 25;
+	if(nItem != 2 && nItem < 5)
+		lvc.cx = m_cResult.GetStringWidth(lvc.pszText) + 60;
+	else
+		lvc.cx = m_cResult.GetStringWidth(lvc.pszText) + 25;
 
-    if(nMask & LVCF_SUBITEM)
-    {
-        if(nSubItem != -1)
-            lvc.iSubItem = nSubItem;
-        else
-            lvc.iSubItem = nItem;
-    }
-    return m_cResult.InsertColumn(nItem,&lvc);
+	if(nMask & LVCF_SUBITEM)
+	{
+		if(nSubItem != -1)
+			lvc.iSubItem = nSubItem;
+		else
+			lvc.iSubItem = nItem;
+	}
+	return m_cResult.InsertColumn(nItem,&lvc);
 }
 
 //增加过滤规则表一个元素
 BOOL CFireView::AddItem(int nItem,int nSubItem,LPCTSTR strItem ,int nImageIndex)
 {
-    LV_ITEM lvItem;
-    lvItem.mask = LVIF_TEXT;
-    lvItem.iItem = nItem;
-    lvItem.iSubItem = nSubItem;
-    lvItem.pszText = (LPTSTR) strItem;
+	LV_ITEM lvItem;
+	lvItem.mask = LVIF_TEXT;
+	lvItem.iItem = nItem;
+	lvItem.iSubItem = nSubItem;
+	lvItem.pszText = (LPTSTR) strItem;
 
-    if(nImageIndex != -1)
-    {
-        lvItem.mask |= LVIF_IMAGE;
-        lvItem.iImage |= LVIF_IMAGE;
-    }
-    if(nSubItem == 0)
-        return m_cResult.InsertItem(&lvItem);
+	if(nImageIndex != -1)
+	{
+		lvItem.mask |= LVIF_IMAGE;
+		lvItem.iImage |= LVIF_IMAGE;
+	}
+	if(nSubItem == 0)
+		return m_cResult.InsertItem(&lvItem);
 
-    return m_cResult.SetItem(&lvItem);
+	return m_cResult.SetItem(&lvItem);
 }
 
 void CFireView::AddHeader(LPTSTR hdr)
 {
-    if (m_pColumns)
-        m_pColumns->AddTail(hdr);
+	if (m_pColumns)
+		m_pColumns->AddTail(hdr);
 }
 
 void CFireView::ShowHeaders()
 {
-    int nIndex = 0;
-    POSITION pos = m_pColumns->GetHeadPosition();
-    while (pos)
-    {
-        CString hdr = (CString)m_pColumns->GetNext(pos);
-        AddColumn(hdr,nIndex++);
-    }
+	int nIndex = 0;
+	POSITION pos = m_pColumns->GetHeadPosition();
+	while (pos)
+	{
+		CString hdr = (CString)m_pColumns->GetNext(pos);
+		AddColumn(hdr,nIndex++);
+	}
 }
 
 void CFireView::OnShowWindow(BOOL bShow, UINT nStatus)
 {
-    CFormView::OnShowWindow(bShow, nStatus);
-    AddHeader(_T("Dest IP"));
-    AddHeader(_T("Dest MASK"));
-    AddHeader(_T("Dest PORT"));
-    AddHeader(_T("Source IP"));
-    AddHeader(_T("Source MASK"));
-    AddHeader(_T("Source PORT"));
-    AddHeader(_T("PROTOCOL"));
-    AddHeader(_T("ACTION"));
+	CFormView::OnShowWindow(bShow, nStatus);
+	AddHeader(_T("Dest IP"));
+	AddHeader(_T("Dest MASK"));
+	AddHeader(_T("Dest PORT"));
+	AddHeader(_T("Source IP"));
+	AddHeader(_T("Source MASK"));
+	AddHeader(_T("Source PORT"));
+	AddHeader(_T("PROTOCOL"));
+	AddHeader(_T("ACTION"));
 }
 
 void CFireView::OnStop()
 {
-    OnStart();
+	OnStart();
 }
 
 void CFireView::OnUpdateStart(CCmdUI* pCmdUI)
 {
-    // TODO: Add your command update UI handler code here
-    pCmdUI ->Enable(start);
+	// TODO: Add your command update UI handler code here
+	pCmdUI ->Enable(start);
 }
 
 void CFireView::OnUpdateStop(CCmdUI* pCmdUI)
 {
-    // TODO: Add your command update UI handler code here
-    pCmdUI ->Enable(!start);
+	// TODO: Add your command update UI handler code here
+	pCmdUI ->Enable(!start);
 }
 
 void CFireView::OnUpdateAllowall(CCmdUI* pCmdUI)
 {
-    // TODO: Add your command update UI handler code here
-    pCmdUI ->Enable(allow);
+	// TODO: Add your command update UI handler code here
+	pCmdUI ->Enable(allow);
 }
 
 void CFireView::OnUpdateBlockall(CCmdUI* pCmdUI)
 {
-    // TODO: Add your command update UI handler code here
-    pCmdUI ->Enable(block);
+	// TODO: Add your command update UI handler code here
+	pCmdUI ->Enable(block);
 }
 
 void CFireView::OnUpdateBlockping(CCmdUI* pCmdUI)
 {
-    // TODO: Add your command update UI handler code here
-    pCmdUI ->Enable(ping);
+	// TODO: Add your command update UI handler code here
+	pCmdUI ->Enable(ping);
 }
 
 BOOL CFireView::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID, CCreateContext* pContext)
 {
-    return CFormView::Create(lpszClassName, lpszWindowName, dwStyle, rect, pParentWnd, nID, pContext);
+	return CFormView::Create(lpszClassName, lpszWindowName, dwStyle, rect, pParentWnd, nID, pContext);
 }
 //***********************************************************************
 
 HBRUSH CFireView::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
-    HBRUSH hbr = CFormView::OnCtlColor(pDC, pWnd, nCtlColor);
-    switch(nCtlColor)
-    {
-    case CTLCOLOR_BTN:
-    case CTLCOLOR_STATIC:
-        pDC->SetBkColor(m_clrBk);
-        pDC->SetTextColor(m_clrText);
-    case CTLCOLOR_DLG:
-        return static_cast<HBRUSH>(m_pBrush->GetSafeHandle());
-    }
-    return CFormView::OnCtlColor(pDC,pWnd,nCtlColor);
+	HBRUSH hbr = CFormView::OnCtlColor(pDC, pWnd, nCtlColor);
+	switch(nCtlColor)
+	{
+	case CTLCOLOR_BTN:
+	case CTLCOLOR_STATIC:
+		pDC->SetBkColor(m_clrBk);
+		pDC->SetTextColor(m_clrText);
+	case CTLCOLOR_DLG:
+		return static_cast<HBRUSH>(m_pBrush->GetSafeHandle());
+	}
+	return CFormView::OnCtlColor(pDC,pWnd,nCtlColor);
 }
 
 void CFireView::OnViewrules()
 {
-    ImplementRule();
+	ImplementRule();
 }
